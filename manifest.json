@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Rotate Active Tabs",
+  "version": "1.0.0",
+  "description": "Navigate between your last active tabs using keyboard shortcuts",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "commands": {
+    "rotate-tabs": {
+      "suggested_key": {
+        "default": "Alt+Q",
+        "mac": "Alt+Q"
+      },
+      "description": "Rotate through active tabs"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
