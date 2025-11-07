@@ -75,6 +75,27 @@ describe('Background Service Worker - Tab History Tracking', () => {
     expect(history).toEqual([5, 4, 3]);
     expect(history.length).toBe(3);
   });
+
+  test('should not have duplicate tabs in history', async () => {
+    chrome.storage.sync.get.mockImplementation((keys, callback) => {
+      callback({});
+    });
+
+    const { trackTabActivation, getTabHistory } = require('../background.js');
+
+    await trackTabActivation(1);
+    await trackTabActivation(2);
+    await trackTabActivation(1); // Switch back to tab 1
+    await trackTabActivation(3);
+    await trackTabActivation(2); // Switch back to tab 2
+
+    const history = await getTabHistory();
+
+    // Tab 2 should only appear once (most recent)
+    // Tab 1 should only appear once
+    expect(history).toEqual([2, 3, 1]);
+    expect(history.length).toBe(3);
+  });
 });
 
 describe('Background Service Worker - Tab Rotation', () => {
