@@ -3,7 +3,11 @@
 
 console.log('Rotate Active Tabs extension loaded');
 
-const { COMMANDS } = typeof require !== 'undefined' ? require('./commands-constants.js') : window;
+// Command constants - must match the command names in manifest.json
+const COMMANDS = {
+  ROTATE_FORWARD: 'rotate-tabs',
+  ROTATE_REVERSE: 'rotate-tabs-reverse'
+};
 
 let tabHistory = [];
 let currentPosition = 0;
