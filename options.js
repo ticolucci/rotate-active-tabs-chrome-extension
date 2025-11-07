@@ -37,10 +37,30 @@ function validateTabHistorySize(size) {
   return size >= CONFIG.MIN_TAB_HISTORY_SIZE && size <= CONFIG.MAX_TAB_HISTORY_SIZE;
 }
 
+function getCurrentShortcut() {
+  return new Promise((resolve) => {
+    chrome.commands.getAll((commands) => {
+      const rotateCommand = commands.find(cmd => cmd.name === 'rotate-tabs');
+      resolve(rotateCommand ? rotateCommand.shortcut : '');
+    });
+  });
+}
+
+async function loadShortcut() {
+  const shortcutSpan = document.getElementById('currentShortcut');
+  const shortcut = await getCurrentShortcut();
+  shortcutSpan.textContent = shortcut || 'Not set';
+}
+
 async function loadSettings() {
   const input = document.getElementById('tabHistorySize');
   const size = await getTabHistorySize();
   input.value = size;
+
+  const shortcutSpan = document.getElementById('currentShortcut');
+  if (shortcutSpan) {
+    await loadShortcut();
+  }
 }
 
 function setupEventListeners() {
@@ -64,6 +84,23 @@ function setupEventListeners() {
     await saveTabHistorySize(newSize);
     showStatus(statusDiv, 'Settings saved!', 'success');
   });
+
+  const refreshShortcutButton = document.getElementById('refreshShortcut');
+  if (refreshShortcutButton) {
+    refreshShortcutButton.addEventListener('click', async () => {
+      await loadShortcut();
+    });
+  }
+
+  const openShortcutsPageButton = document.getElementById('openShortcutsPage');
+  if (openShortcutsPageButton) {
+    openShortcutsPageButton.addEventListener('click', () => {
+      chrome.tabs.create({
+        url: chrome.runtime.getURL('shortcuts-help.html'),
+        active: true
+      });
+    });
+  }
 }
 
 // Load saved settings when page loads
@@ -89,6 +126,8 @@ if (typeof module !== 'undefined' && module.exports) {
     showStatus,
     validateTabHistorySize,
     loadSettings,
-    setupEventListeners
+    setupEventListeners,
+    getCurrentShortcut,
+    loadShortcut
   };
 }
