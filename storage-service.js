@@ -18,4 +18,6 @@ const StorageService = {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = StorageService;
+} else if (typeof window !== 'undefined') {
+  window.StorageService = StorageService;
 }
