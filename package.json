@@ -34,7 +34,7 @@
       "!coverage/**"
     ],
     "testMatch": [
-      "**/__tests__/**/*.js",
+      "**/tests/**/*.js",
       "**/?(*.)+(spec|test).js"
     ]
   }
