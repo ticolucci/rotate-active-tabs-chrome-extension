@@ -23,6 +23,10 @@ async function getTabHistorySize() {
 }
 
 async function trackTabActivation(tabId) {
+  // Remove existing occurrence of this tab to avoid duplicates
+  tabHistory = tabHistory.filter(id => id !== tabId);
+
+  // Add to front of history
   tabHistory.unshift(tabId);
   currentPosition = 0;
 
