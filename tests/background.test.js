@@ -21,6 +21,9 @@ describe('Background Service Worker - Tab History Tracking', () => {
         sync: {
           get: jest.fn(),
           set: jest.fn()
+        },
+        onChanged: {
+          addListener: jest.fn()
         }
       }
     };
@@ -97,6 +100,9 @@ describe('Background Service Worker - Tab Rotation', () => {
         sync: {
           get: jest.fn((keys, callback) => callback({})),
           set: jest.fn()
+        },
+        onChanged: {
+          addListener: jest.fn()
         }
       }
     };
