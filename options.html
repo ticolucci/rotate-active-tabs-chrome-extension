@@ -16,7 +16,15 @@
     <main>
       <section class="settings-section">
         <h2>Settings</h2>
-        <p class="info">Settings will be added in future versions.</p>
+
+        <div class="setting-item">
+          <label for="tabHistorySize">Number of tabs to track:</label>
+          <input type="number" id="tabHistorySize" min="2" max="20" value="5">
+          <span class="help-text">Default: 5</span>
+        </div>
+
+        <button id="saveButton">Save Settings</button>
+        <div id="status" class="status-message"></div>
       </section>
     </main>
     
