@@ -1,0 +1,41 @@
+{
+  "name": "rotate-active-tabs-chrome-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension to navigate between the last active tabs",
+  "main": "background.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "verify": "node verify-structure.js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "tabs",
+    "navigation",
+    "productivity"
+  ],
+  "author": "Thiago R. Colucci",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.260",
+    "@types/jest": "^29.5.11",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "collectCoverageFrom": [
+      "*.js",
+      "!node_modules/**",
+      "!coverage/**"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.js",
+      "**/?(*.)+(spec|test).js"
+    ]
+  }
+}
