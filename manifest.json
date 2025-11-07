@@ -15,14 +15,14 @@
     "rotate-tabs": {
       "suggested_key": {
         "default": "Ctrl+Q",
-        "mac": "Ctrl+Q"
+        "mac": "MacCtrl+Q"
       },
       "description": "Rotate through active tabs"
     },
     "rotate-tabs-reverse": {
       "suggested_key": {
         "default": "Ctrl+Shift+Q",
-        "mac": "Ctrl+Shift+Q"
+        "mac": "MacCtrl+Shift+Q"
       },
       "description": "Rotate through active tabs (reverse)"
     }
