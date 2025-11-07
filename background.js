@@ -1,9 +1,9 @@
 // Background service worker for the Rotate Active Tabs extension
 // This will track active tabs and handle keyboard shortcuts
 
-console.log('Rotate Active Tabs extension loaded');
+import { COMMANDS } from './commands-constants.js';
 
-const { COMMANDS } = typeof require !== 'undefined' ? require('./commands-constants.js') : window;
+console.log('Rotate Active Tabs extension loaded');
 
 let tabHistory = [];
 let currentPosition = 0;
@@ -129,12 +129,10 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log('Extension installed or updated');
 });
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    trackTabActivation,
-    getTabHistory,
-    removeTabFromHistory,
-    rotateForward,
-    rotateReverse
-  };
-}
+export {
+  trackTabActivation,
+  getTabHistory,
+  removeTabFromHistory,
+  rotateForward,
+  rotateReverse
+};
