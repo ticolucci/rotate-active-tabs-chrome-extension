@@ -3,13 +3,21 @@
 
 console.log('Rotate Active Tabs extension loaded');
 
+const { COMMANDS } = typeof require !== 'undefined' ? require('./commands-constants.js') : window;
+
 let tabHistory = [];
 let currentPosition = 0;
+let cachedTabHistorySize = null;
 
 async function getTabHistorySize() {
+  if (cachedTabHistorySize !== null) {
+    return cachedTabHistorySize;
+  }
+
   return new Promise((resolve) => {
     chrome.storage.sync.get(['tabHistorySize'], (result) => {
-      resolve(result.tabHistorySize || 5);
+      cachedTabHistorySize = result.tabHistorySize || 5;
+      resolve(cachedTabHistorySize);
     });
   });
 }
@@ -60,10 +68,18 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 chrome.commands.onCommand.addListener((command) => {
   console.log(`Command received: ${command}`);
 
-  if (command === 'rotate-tabs') {
+  if (command === COMMANDS.ROTATE_FORWARD) {
     rotateForward();
-  } else if (command === 'rotate-tabs-reverse') {
+  } else if (command === COMMANDS.ROTATE_REVERSE) {
     rotateReverse();
+  }
+});
+
+// Listen for storage changes to invalidate cache
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'sync' && changes.tabHistorySize) {
+    cachedTabHistorySize = changes.tabHistorySize.newValue || 5;
+    console.log(`Tab history size changed to: ${cachedTabHistorySize}`);
   }
 });
 
