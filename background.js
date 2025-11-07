@@ -8,6 +8,7 @@ const { COMMANDS } = typeof require !== 'undefined' ? require('./commands-consta
 let tabHistory = [];
 let currentPosition = 0;
 let cachedTabHistorySize = null;
+let isRotating = false;
 
 async function getTabHistorySize() {
   if (cachedTabHistorySize !== null) {
@@ -69,6 +70,7 @@ async function rotateForward() {
   currentPosition = (currentPosition + 1) % tabHistory.length;
   const nextTabId = tabHistory[currentPosition];
 
+  isRotating = true;
   chrome.tabs.update(nextTabId, { active: true });
 }
 
@@ -80,12 +82,20 @@ async function rotateReverse() {
   currentPosition = (currentPosition - 1 + tabHistory.length) % tabHistory.length;
   const nextTabId = tabHistory[currentPosition];
 
+  isRotating = true;
   chrome.tabs.update(nextTabId, { active: true });
 }
 
 // Listen for tab activation
 chrome.tabs.onActivated.addListener((activeInfo) => {
   console.log(`Tab activated: ${activeInfo.tabId}`);
+
+  // Ignore tab activations caused by rotation
+  if (isRotating) {
+    isRotating = false;
+    return;
+  }
+
   trackTabActivation(activeInfo.tabId);
 });
 
