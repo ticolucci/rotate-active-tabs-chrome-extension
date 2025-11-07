@@ -6,6 +6,12 @@ This is a Chrome extension called "Rotate Active Tabs" that helps users navigate
 ## Purpose
 The extension tracks the last X active tabs and allows users to quickly switch between them, similar to Alt+Tab behavior for windows but specifically for browser tabs.
 
+## Current Status
+- **State**: Fresh project with boilerplate only - NO features implemented yet
+- **Testing**: Jest is configured and working correctly with jsdom environment
+- **Development Approach**: Follow TDD cycle by default (user will explicitly indicate when to skip it)
+- **Next Steps**: Features will be built incrementally - wait for user direction on what to implement first
+
 ## Architecture
 
 ### Components
@@ -90,5 +96,9 @@ When working on this project:
 1. Understand the extension architecture before making changes
 2. Test in Chrome with Developer Mode enabled
 3. Follow existing code style and patterns
-4. Add tests for new functionality
-5. Update documentation as needed
+4. Add functionality through a TDD cycle. Ensure to check for quick refactoring opportunities while the tests are green
+5. In order to add the first red test, start with a simple case that express the behaviour the production code need to have; make the smallest implementation that passes the test; add new test cases that triangulates the target behaviour and breaks the implementation. The code is complete, when we can't add a test that specifies the behaviour and break the production code
+6. Update documentation as needed
+7. Do not document every line. Extract functions to add code clarity, instead of adding comments
+8. Commit the code at the end of a planned execution (as the on-before-last task in a plan)
+9. The last task should always be a suggestion for larger refactor that you choseto not do as part of the TDD cycle.
