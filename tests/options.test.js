@@ -44,3 +44,99 @@ describe('Options Page - Tab History Size', () => {
     expect(chrome.storage.sync.set).toHaveBeenCalledWith({ tabHistorySize: 8 }, expect.any(Function));
   });
 });
+
+describe('Options Page - Keyboard Shortcuts', () => {
+  beforeEach(() => {
+    global.chrome = {
+      commands: {
+        getAll: jest.fn()
+      }
+    };
+    jest.resetModules();
+  });
+
+  test('should get current keyboard shortcut for rotate-tabs command', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs',
+          description: 'Rotate through active tabs',
+          shortcut: 'Alt+Q'
+        }
+      ]);
+    });
+
+    const { getCurrentShortcut } = require('../options.js');
+    const shortcut = await getCurrentShortcut();
+
+    expect(shortcut).toBe('Alt+Q');
+  });
+
+  test('should return empty string when no shortcut is set', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs',
+          description: 'Rotate through active tabs',
+          shortcut: ''
+        }
+      ]);
+    });
+
+    const { getCurrentShortcut } = require('../options.js');
+    const shortcut = await getCurrentShortcut();
+
+    expect(shortcut).toBe('');
+  });
+
+  test('should return empty string when rotate-tabs command is not found', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([]);
+    });
+
+    const { getCurrentShortcut } = require('../options.js');
+    const shortcut = await getCurrentShortcut();
+
+    expect(shortcut).toBe('');
+  });
+
+  test('should load and display current shortcut', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs',
+          description: 'Rotate through active tabs',
+          shortcut: 'Alt+Q'
+        }
+      ]);
+    });
+
+    document.body.innerHTML = '<span id="currentShortcut"></span>';
+
+    const { loadShortcut } = require('../options.js');
+    await loadShortcut();
+
+    const shortcutSpan = document.getElementById('currentShortcut');
+    expect(shortcutSpan.textContent).toBe('Alt+Q');
+  });
+
+  test('should display "Not set" when no shortcut is configured', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs',
+          description: 'Rotate through active tabs',
+          shortcut: ''
+        }
+      ]);
+    });
+
+    document.body.innerHTML = '<span id="currentShortcut"></span>';
+
+    const { loadShortcut } = require('../options.js');
+    await loadShortcut();
+
+    const shortcutSpan = document.getElementById('currentShortcut');
+    expect(shortcutSpan.textContent).toBe('Not set');
+  });
+});

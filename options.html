@@ -26,6 +26,35 @@
         <button id="saveButton">Save Settings</button>
         <div id="status" class="status-message"></div>
       </section>
+
+      <section class="settings-section">
+        <h2>Keyboard Shortcut</h2>
+
+        <div class="setting-item">
+          <label>Current shortcut:</label>
+          <div class="shortcut-display">
+            <span id="currentShortcut" class="shortcut-badge">Loading...</span>
+            <button id="refreshShortcut" class="secondary-button">Refresh</button>
+          </div>
+          <span class="help-text">
+            To change the keyboard shortcut, click the button below and follow the instructions.
+          </span>
+        </div>
+
+        <div class="shortcut-instructions">
+          <p><strong>How to change the shortcut:</strong></p>
+          <ol>
+            <li>Click the "Open Shortcuts Page" button below</li>
+            <li>A new tab will open with instructions (Chrome doesn't allow direct access to chrome://extensions/shortcuts)</li>
+            <li>Copy <code>chrome://extensions/shortcuts</code> and paste it in your browser's address bar</li>
+            <li>Find "Rotate Active Tabs" in the list</li>
+            <li>Click the pencil icon or shortcut field to set a new shortcut</li>
+            <li>Return to this page and click "Refresh" to see the updated shortcut</li>
+          </ol>
+        </div>
+
+        <button id="openShortcutsPage" class="secondary-button">Open Shortcuts Page Instructions</button>
+      </section>
     </main>
     
     <footer>

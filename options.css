@@ -134,3 +134,75 @@ footer {
   color: #999;
   font-size: 0.875rem;
 }
+
+.shortcut-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.shortcut-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f1f3f4;
+  border: 2px solid #dadce0;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1a73e8;
+  min-width: 100px;
+  text-align: center;
+}
+
+.secondary-button {
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #1a73e8;
+  border: 1px solid #1a73e8;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background-color: #f1f3f4;
+}
+
+.secondary-button:active {
+  background-color: #e8eaed;
+}
+
+.shortcut-instructions {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #1a73e8;
+}
+
+.shortcut-instructions p {
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.shortcut-instructions ol {
+  margin-left: 20px;
+  color: #555;
+}
+
+.shortcut-instructions li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.shortcut-instructions code {
+  background-color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  border: 1px solid #dadce0;
+  color: #d93025;
+  font-size: 0.9rem;
+}
