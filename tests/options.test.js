@@ -139,4 +139,69 @@ describe('Options Page - Keyboard Shortcuts', () => {
     const shortcutSpan = document.getElementById('currentShortcut');
     expect(shortcutSpan.textContent).toBe('Not set');
   });
+
+  test('should get current keyboard shortcut for rotate-tabs-reverse command', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs-reverse',
+          description: 'Rotate through active tabs (reverse)',
+          shortcut: 'Ctrl+Shift+Q'
+        }
+      ]);
+    });
+
+    const { getReverseShortcut } = require('../options.js');
+    const shortcut = await getReverseShortcut();
+
+    expect(shortcut).toBe('Ctrl+Shift+Q');
+  });
+
+  test('should return empty string when reverse shortcut is not set', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs-reverse',
+          description: 'Rotate through active tabs (reverse)',
+          shortcut: ''
+        }
+      ]);
+    });
+
+    const { getReverseShortcut } = require('../options.js');
+    const shortcut = await getReverseShortcut();
+
+    expect(shortcut).toBe('');
+  });
+
+  test('should load and display both shortcuts', async () => {
+    chrome.commands.getAll.mockImplementation((callback) => {
+      callback([
+        {
+          name: 'rotate-tabs',
+          description: 'Rotate through active tabs',
+          shortcut: 'Alt+Q'
+        },
+        {
+          name: 'rotate-tabs-reverse',
+          description: 'Rotate through active tabs (reverse)',
+          shortcut: 'Ctrl+Shift+Q'
+        }
+      ]);
+    });
+
+    document.body.innerHTML = `
+      <span id="currentShortcut"></span>
+      <span id="currentReverseShortcut"></span>
+    `;
+
+    const { loadShortcuts } = require('../options.js');
+    await loadShortcuts();
+
+    const shortcutSpan = document.getElementById('currentShortcut');
+    const reverseShortcutSpan = document.getElementById('currentReverseShortcut');
+
+    expect(shortcutSpan.textContent).toBe('Alt+Q');
+    expect(reverseShortcutSpan.textContent).toBe('Ctrl+Shift+Q');
+  });
 });

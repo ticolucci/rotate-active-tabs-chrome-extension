@@ -14,10 +14,17 @@
   "commands": {
     "rotate-tabs": {
       "suggested_key": {
-        "default": "Alt+Q",
-        "mac": "Alt+Q"
+        "default": "Ctrl+Q",
+        "mac": "Ctrl+Q"
       },
       "description": "Rotate through active tabs"
+    },
+    "rotate-tabs-reverse": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Q",
+        "mac": "Ctrl+Shift+Q"
+      },
+      "description": "Rotate through active tabs (reverse)"
     }
   },
   "icons": {

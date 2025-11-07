@@ -46,10 +46,35 @@ function getCurrentShortcut() {
   });
 }
 
+function getReverseShortcut() {
+  return new Promise((resolve) => {
+    chrome.commands.getAll((commands) => {
+      const reverseCommand = commands.find(cmd => cmd.name === 'rotate-tabs-reverse');
+      resolve(reverseCommand ? reverseCommand.shortcut : '');
+    });
+  });
+}
+
 async function loadShortcut() {
   const shortcutSpan = document.getElementById('currentShortcut');
   const shortcut = await getCurrentShortcut();
   shortcutSpan.textContent = shortcut || 'Not set';
+}
+
+async function loadShortcuts() {
+  const shortcutSpan = document.getElementById('currentShortcut');
+  const reverseShortcutSpan = document.getElementById('currentReverseShortcut');
+
+  const shortcut = await getCurrentShortcut();
+  const reverseShortcut = await getReverseShortcut();
+
+  if (shortcutSpan) {
+    shortcutSpan.textContent = shortcut || 'Not set';
+  }
+
+  if (reverseShortcutSpan) {
+    reverseShortcutSpan.textContent = reverseShortcut || 'Not set';
+  }
 }
 
 async function loadSettings() {
@@ -59,7 +84,7 @@ async function loadSettings() {
 
   const shortcutSpan = document.getElementById('currentShortcut');
   if (shortcutSpan) {
-    await loadShortcut();
+    await loadShortcuts();
   }
 }
 
@@ -88,7 +113,7 @@ function setupEventListeners() {
   const refreshShortcutButton = document.getElementById('refreshShortcut');
   if (refreshShortcutButton) {
     refreshShortcutButton.addEventListener('click', async () => {
-      await loadShortcut();
+      await loadShortcuts();
     });
   }
 
@@ -128,6 +153,8 @@ if (typeof module !== 'undefined' && module.exports) {
     loadSettings,
     setupEventListeners,
     getCurrentShortcut,
-    loadShortcut
+    getReverseShortcut,
+    loadShortcut,
+    loadShortcuts
   };
 }

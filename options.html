@@ -28,16 +28,28 @@
       </section>
 
       <section class="settings-section">
-        <h2>Keyboard Shortcut</h2>
+        <h2>Keyboard Shortcuts</h2>
 
         <div class="setting-item">
-          <label>Current shortcut:</label>
+          <label>Forward rotation:</label>
           <div class="shortcut-display">
             <span id="currentShortcut" class="shortcut-badge">Loading...</span>
-            <button id="refreshShortcut" class="secondary-button">Refresh</button>
           </div>
+          <span class="help-text">Rotate forward through your tab history</span>
+        </div>
+
+        <div class="setting-item">
+          <label>Reverse rotation:</label>
+          <div class="shortcut-display">
+            <span id="currentReverseShortcut" class="shortcut-badge">Loading...</span>
+          </div>
+          <span class="help-text">Rotate backward through your tab history</span>
+        </div>
+
+        <div class="setting-item">
+          <button id="refreshShortcut" class="secondary-button">Refresh Shortcuts</button>
           <span class="help-text">
-            To change the keyboard shortcut, click the button below and follow the instructions.
+            To change keyboard shortcuts, click the button below and follow the instructions.
           </span>
         </div>
 
