@@ -24,6 +24,12 @@ async function getTabHistorySize() {
 }
 
 async function trackTabActivation(tabId) {
+  // If we're in the middle of the stack (currentPosition > 0),
+  // clear the forward history (positions 0 to currentPosition-1)
+  if (currentPosition > 0) {
+    tabHistory = tabHistory.slice(currentPosition);
+  }
+
   // Remove existing occurrence of this tab to avoid duplicates
   tabHistory = tabHistory.filter(id => id !== tabId);
 
