@@ -10,6 +10,9 @@ describe('Background Service Worker - Tab History Tracking', () => {
         onActivated: {
           addListener: jest.fn()
         },
+        onRemoved: {
+          addListener: jest.fn()
+        },
         update: jest.fn()
       },
       commands: {
@@ -96,6 +99,27 @@ describe('Background Service Worker - Tab History Tracking', () => {
     expect(history).toEqual([2, 3, 1]);
     expect(history.length).toBe(3);
   });
+
+  test('should remove closed tab from history', async () => {
+    chrome.storage.sync.get.mockImplementation((keys, callback) => {
+      callback({});
+    });
+
+    const { trackTabActivation, removeTabFromHistory, getTabHistory } = require('../background.js');
+
+    await trackTabActivation(1);
+    await trackTabActivation(2);
+    await trackTabActivation(3);
+
+    // Close tab 2
+    await removeTabFromHistory(2);
+
+    const history = await getTabHistory();
+
+    // Tab 2 should be removed from history
+    expect(history).toEqual([3, 1]);
+    expect(history.length).toBe(2);
+  });
 });
 
 describe('Background Service Worker - Tab Rotation', () => {
@@ -108,6 +132,9 @@ describe('Background Service Worker - Tab Rotation', () => {
       },
       tabs: {
         onActivated: {
+          addListener: jest.fn()
+        },
+        onRemoved: {
           addListener: jest.fn()
         },
         update: jest.fn()
