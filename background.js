@@ -9,6 +9,7 @@ let tabHistory = [];
 let currentPosition = 0;
 let cachedTabHistorySize = null;
 let isRotating = false;
+let commitTimer = null;
 
 async function getTabHistorySize() {
   if (cachedTabHistorySize !== null) {
@@ -24,10 +25,15 @@ async function getTabHistorySize() {
 }
 
 async function trackTabActivation(tabId) {
+  // Cancel any pending navigation commit
+  clearCommitTimer();
+
   // If we're in the middle of the stack (currentPosition > 0),
-  // clear the forward history (positions 0 to currentPosition-1)
+  // keep only the currently viewed tab (cancel navigation mode)
   if (currentPosition > 0) {
-    tabHistory = tabHistory.slice(currentPosition);
+    const currentTab = tabHistory[currentPosition];
+    tabHistory = [currentTab];
+    currentPosition = 0;
   }
 
   // Remove existing occurrence of this tab to avoid duplicates
@@ -35,7 +41,6 @@ async function trackTabActivation(tabId) {
 
   // Add to front of history
   tabHistory.unshift(tabId);
-  currentPosition = 0;
 
   const maxSize = await getTabHistorySize();
   if (tabHistory.length > maxSize) {
@@ -68,6 +73,34 @@ async function removeTabFromHistory(tabId) {
   // If index > currentPosition, no adjustment needed
 }
 
+function clearCommitTimer() {
+  if (commitTimer !== null) {
+    clearTimeout(commitTimer);
+    commitTimer = null;
+  }
+}
+
+function commitNavigation() {
+  clearCommitTimer();
+
+  if (currentPosition === 0) {
+    return; // Already at front, nothing to commit
+  }
+
+  // Move the tab at currentPosition to the front
+  const selectedTabId = tabHistory[currentPosition];
+  tabHistory = tabHistory.filter(id => id !== selectedTabId);
+  tabHistory.unshift(selectedTabId);
+  currentPosition = 0;
+}
+
+function startCommitTimer() {
+  clearCommitTimer();
+  commitTimer = setTimeout(() => {
+    commitNavigation();
+  }, 1500);
+}
+
 async function rotateForward() {
   if (tabHistory.length < 2) {
     return;
@@ -78,6 +111,8 @@ async function rotateForward() {
 
   isRotating = true;
   chrome.tabs.update(nextTabId, { active: true });
+
+  startCommitTimer();
 }
 
 async function rotateReverse() {
@@ -90,6 +125,8 @@ async function rotateReverse() {
 
   isRotating = true;
   chrome.tabs.update(nextTabId, { active: true });
+
+  startCommitTimer();
 }
 
 // Listen for tab activation
