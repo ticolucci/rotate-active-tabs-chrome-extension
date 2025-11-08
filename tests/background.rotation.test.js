@@ -287,13 +287,13 @@ describe('Background Service Worker - Tab Rotation', () => {
     const listener = chrome.tabs.onActivated.addListener.mock.calls[0][0];
     listener({ tabId: 4 });
 
-    // History should now be [4, 3, 2, 1] - tab 4 moved to front
-    // (The rotations to tabs 2 and 1 didn't modify the history)
+    // History should now be [4, 1] - forward history (tabs 3 and 2) was cleared
+    // since we were at position 2 when we clicked tab 4
     history = await getTabHistory();
-    expect(history).toEqual([4, 3, 2, 1]);
+    expect(history).toEqual([4, 1]);
 
-    // Next rotation should start from position 0 (tab 4) and go to position 1 (tab 3)
+    // Next rotation should start from position 0 (tab 4) and go to position 1 (tab 1)
     await rotateForward();
-    expect(chrome.tabs.update).toHaveBeenLastCalledWith(3, { active: true });
+    expect(chrome.tabs.update).toHaveBeenLastCalledWith(1, { active: true });
   });
 });
