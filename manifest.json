@@ -22,8 +22,8 @@
     },
     "rotate-tabs-reverse": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Q",
-        "mac": "MacCtrl+Shift+Q"
+        "default": "Ctrl+1",
+        "mac": "MacCtrl+1"
       },
       "description": "Rotate through active tabs (reverse)"
     }
