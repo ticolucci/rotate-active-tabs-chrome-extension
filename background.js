@@ -28,12 +28,18 @@ async function trackTabActivation(tabId) {
   // Cancel any pending navigation commit
   clearCommitTimer();
 
-  // If we're in the middle of the stack (currentPosition > 0),
-  // keep only the currently viewed tab (cancel navigation mode)
+  // If we're in the middle of the stack (currentPosition > 0)
   if (currentPosition > 0) {
     const currentTab = tabHistory[currentPosition];
-    tabHistory = [currentTab];
-    currentPosition = 0;
+    if (tabId === currentTab) {
+      // Same tab re-activated (e.g., window focus restored) - just commit navigation
+      commitNavigation();
+      return;
+    } else {
+      // Different tab clicked - clear forward history and keep only current tab
+      tabHistory = [currentTab];
+      currentPosition = 0;
+    }
   }
 
   // Remove existing occurrence of this tab to avoid duplicates

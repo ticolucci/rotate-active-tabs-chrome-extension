@@ -469,5 +469,79 @@ describe('Background Service Worker - Tab Rotation', () => {
       let history = await getTabHistory();
       expect(history).toEqual([2, 3, 1]);
     });
+
+    test('should commit navigation when same tab re-activates during rotation', async () => {
+      const background = require('../background.js');
+      const { trackTabActivation, rotateForward, getTabHistory } = background;
+
+      // Simulate Chrome behavior: onActivated fires after tabs.update
+      chrome.tabs.update.mockImplementation((tabId) => {
+        const listener = chrome.tabs.onActivated.addListener.mock.calls[0][0];
+        listener({ tabId });
+      });
+
+      // Setup: history = [A, B, C, D]
+      await trackTabActivation('D');
+      await trackTabActivation('C');
+      await trackTabActivation('B');
+      await trackTabActivation('A');
+
+      let history = await getTabHistory();
+      expect(history).toEqual(['A', 'B', 'C', 'D']);
+
+      // Two quick forward presses to get to tab C
+      await rotateForward(); // pos=1, switch to B, isRotating becomes false after onActivated
+      await rotateForward(); // pos=2, switch to C, isRotating becomes false after onActivated
+
+      // Now: pos = 2, isRotating = false, timer is pending (1500ms)
+      // History should still be [A, B, C, D]
+      history = await getTabHistory();
+      expect(history).toEqual(['A', 'B', 'C', 'D']);
+
+      // Simulate Chrome firing another onActivated for the same tab
+      // (e.g., window focus restored, service worker wake-up)
+      // This happens BEFORE the commit timer fires
+      const listener = chrome.tabs.onActivated.addListener.mock.calls[0][0];
+      listener({ tabId: 'C' });
+
+      // History should be [C, A, B, D] (committed with C at front)
+      // preserving all tabs instead of wiping history
+      history = await getTabHistory();
+      expect(history).toEqual(['C', 'A', 'B', 'D']);
+    });
+
+    test('should preserve history after commit and multiple timeout cycles', async () => {
+      const background = require('../background.js');
+      const { trackTabActivation, rotateForward, getTabHistory } = background;
+
+      chrome.tabs.update.mockImplementation(() => {});
+
+      await trackTabActivation(1);
+      await trackTabActivation(2);
+      await trackTabActivation(3);
+      await trackTabActivation(4);
+
+      // History: [4, 3, 2, 1]
+      let history = await getTabHistory();
+      expect(history).toEqual([4, 3, 2, 1]);
+
+      // Two quick forward presses to get to tab 2
+      await rotateForward(); // pos=1, switch to tab 3
+      await rotateForward(); // pos=2, switch to tab 2
+
+      // Wait for commit timer (1500ms)
+      jest.advanceTimersByTime(1500);
+
+      // History should be [2, 4, 3, 1] after commit
+      history = await getTabHistory();
+      expect(history).toEqual([2, 4, 3, 1]);
+
+      // Wait 4x more commit timer time (6000ms more) with NO activity
+      jest.advanceTimersByTime(6000);
+
+      // History should still be [2, 4, 3, 1], NOT [2]
+      history = await getTabHistory();
+      expect(history).toEqual([2, 4, 3, 1]);
+    });
   });
 });
